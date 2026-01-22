@@ -1,11 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, Dumbbell, BookOpen, TrendingUp, User } from 'lucide-react';
+import { Home, Dumbbell, UtensilsCrossed, TrendingUp, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
   { path: '/dashboard', icon: Home, label: 'Home' },
   { path: '/workouts', icon: Dumbbell, label: 'Workouts' },
-  { path: '/exercises', icon: BookOpen, label: 'Exercises' },
+  { path: '/diet', icon: UtensilsCrossed, label: 'Diet' },
   { path: '/progress', icon: TrendingUp, label: 'Progress' },
   { path: '/profile', icon: User, label: 'Profile' },
 ];

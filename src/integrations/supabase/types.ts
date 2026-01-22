@@ -62,6 +62,98 @@ export type Database = {
         }
         Relationships: []
       }
+      meal_logs: {
+        Row: {
+          calories: number | null
+          id: string
+          logged_at: string | null
+          meal_id: string | null
+          meal_name: string
+          meal_type: string | null
+          user_id: string
+        }
+        Insert: {
+          calories?: number | null
+          id?: string
+          logged_at?: string | null
+          meal_id?: string | null
+          meal_name: string
+          meal_type?: string | null
+          user_id: string
+        }
+        Update: {
+          calories?: number | null
+          id?: string
+          logged_at?: string | null
+          meal_id?: string | null
+          meal_name?: string
+          meal_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meal_logs_meal_id_fkey"
+            columns: ["meal_id"]
+            isOneToOne: false
+            referencedRelation: "meals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      meals: {
+        Row: {
+          calories: number
+          carbs_g: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          diet_type: string
+          fat_g: number | null
+          fitness_goal: string[] | null
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          instructions: string[] | null
+          name: string
+          prep_time_mins: number | null
+          protein_g: number | null
+        }
+        Insert: {
+          calories: number
+          carbs_g?: number | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          diet_type: string
+          fat_g?: number | null
+          fitness_goal?: string[] | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          instructions?: string[] | null
+          name: string
+          prep_time_mins?: number | null
+          protein_g?: number | null
+        }
+        Update: {
+          calories?: number
+          carbs_g?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          diet_type?: string
+          fat_g?: number | null
+          fitness_goal?: string[] | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          instructions?: string[] | null
+          name?: string
+          prep_time_mins?: number | null
+          protein_g?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           activity_level: string | null
