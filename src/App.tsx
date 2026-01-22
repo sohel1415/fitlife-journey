@@ -14,6 +14,7 @@ import Progress from "./pages/Progress";
 import Profile from "./pages/Profile";
 import ActiveWorkout from "./pages/ActiveWorkout";
 import BMICalculator from "./pages/BMICalculator";
+import Diet from "./pages/Diet";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/workout/:planId" element={<ActiveWorkout />} />
               <Route path="/bmi" element={<BMICalculator />} />
+              <Route path="/diet" element={<Diet />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
