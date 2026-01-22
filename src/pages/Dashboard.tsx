@@ -6,7 +6,7 @@ import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
-import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight } from 'lucide-react';
+import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight, BookOpen, UtensilsCrossed } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -93,6 +93,18 @@ const Dashboard = () => {
             title="Start Workout"
             subtitle="Choose from our workout plans"
             onClick={() => navigate('/workouts')}
+          />
+          <ActionCard 
+            icon={<BookOpen className="w-6 h-6" />}
+            title="Exercise Library"
+            subtitle="Browse 50+ exercises with instructions"
+            onClick={() => navigate('/exercises')}
+          />
+          <ActionCard 
+            icon={<UtensilsCrossed className="w-6 h-6" />}
+            title="Diet Suggestions"
+            subtitle="View personalized meal recommendations"
+            onClick={() => navigate('/diet')}
           />
           <ActionCard 
             icon={<TrendingUp className="w-6 h-6" />}
