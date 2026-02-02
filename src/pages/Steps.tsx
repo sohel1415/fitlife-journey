@@ -1,24 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStepLogs } from '@/hooks/useStepLogs';
+import { useStepDetector } from '@/hooks/useStepDetector';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { BottomNav } from '@/components/BottomNav';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { ArrowLeft, Plus, Footprints, Target, Flame, Trophy, TrendingUp } from 'lucide-react';
+import { ArrowLeft, Plus, Footprints, Target, Flame, Trophy, TrendingUp, Play, Pause, Smartphone } from 'lucide-react';
 
 const Steps = () => {
   const navigate = useNavigate();
   const { getTodayLog, addSteps, updateGoal, getWeeklyData, getWeeklyStats, getCurrentStreak, loading } = useStepLogs();
+  const stepDetector = useStepDetector();
+  
   const [steps, setSteps] = useState('');
   const [goalInput, setGoalInput] = useState('');
   const [stepsDialogOpen, setStepsDialogOpen] = useState(false);
   const [goalDialogOpen, setGoalDialogOpen] = useState(false);
+  const [lastSavedSteps, setLastSavedSteps] = useState(0);
 
   const todayLog = getTodayLog();
-  const currentSteps = todayLog?.steps || 0;
+  const currentSteps = (todayLog?.steps || 0) + stepDetector.steps;
   const currentGoal = todayLog?.goal || 10000;
   const progress = Math.min((currentSteps / currentGoal) * 100, 100);
   const weeklyData = getWeeklyData();
@@ -29,6 +33,38 @@ const Steps = () => {
   const caloriesBurned = Math.round(currentSteps * 0.04);
   // Estimate distance (approx 0.0008 km per step)
   const distanceKm = (currentSteps * 0.0008).toFixed(2);
+
+  // Auto-save steps periodically when tracking
+  useEffect(() => {
+    if (stepDetector.isTracking && stepDetector.steps > lastSavedSteps) {
+      const saveInterval = setInterval(async () => {
+        const stepsToSave = stepDetector.steps - lastSavedSteps;
+        if (stepsToSave > 0) {
+          await addSteps(stepsToSave, currentGoal);
+          setLastSavedSteps(stepDetector.steps);
+        }
+      }, 30000); // Save every 30 seconds
+
+      return () => clearInterval(saveInterval);
+    }
+  }, [stepDetector.isTracking, stepDetector.steps, lastSavedSteps, addSteps, currentGoal]);
+
+  // Save steps when stopping tracking
+  const handleStopTracking = async () => {
+    stepDetector.stopTracking();
+    const stepsToSave = stepDetector.steps - lastSavedSteps;
+    if (stepsToSave > 0) {
+      await addSteps(stepsToSave, currentGoal);
+      setLastSavedSteps(stepDetector.steps);
+    }
+  };
+
+  const handleStartTracking = async () => {
+    const started = await stepDetector.startTracking();
+    if (!started && stepDetector.permissionStatus === 'denied') {
+      // Show message about permission denied
+    }
+  };
 
   const handleAddSteps = async () => {
     if (!steps) return;
@@ -108,12 +144,20 @@ const Steps = () => {
               <div className="w-16 h-16 bg-primary-foreground/20 rounded-full flex items-center justify-center">
                 <Footprints className="w-8 h-8" />
               </div>
-              {progress >= 100 && (
-                <div className="flex items-center gap-2 bg-primary-foreground/20 px-3 py-1 rounded-full">
-                  <Trophy className="w-4 h-4" />
-                  <span className="text-sm font-medium">Goal Achieved!</span>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                {stepDetector.isTracking && (
+                  <div className="flex items-center gap-1 bg-primary-foreground/20 px-3 py-1 rounded-full animate-pulse">
+                    <div className="w-2 h-2 bg-green-400 rounded-full" />
+                    <span className="text-sm">Tracking</span>
+                  </div>
+                )}
+                {progress >= 100 && (
+                  <div className="flex items-center gap-2 bg-primary-foreground/20 px-3 py-1 rounded-full">
+                    <Trophy className="w-4 h-4" />
+                    <span className="text-sm font-medium">Goal Achieved!</span>
+                  </div>
+                )}
+              </div>
             </div>
             
             <div className="mb-4">
@@ -140,45 +184,92 @@ const Steps = () => {
           </CardContent>
         </Card>
 
-        {/* Quick Add Buttons */}
-        <div className="grid grid-cols-4 gap-2">
-          {[500, 1000, 2000, 5000].map(amount => (
-            <Button 
-              key={amount} 
-              variant="outline" 
-              className="flex flex-col h-16"
-              onClick={() => quickAddSteps(amount)}
-            >
-              <span className="text-xs text-muted-foreground">+</span>
-              <span className="font-semibold">{amount}</span>
-            </Button>
-          ))}
-        </div>
-
-        {/* Custom Add */}
-        <Dialog open={stepsDialogOpen} onOpenChange={setStepsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="w-full" size="lg">
-              <Plus className="w-5 h-5 mr-2" /> Log Steps
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Log Your Steps</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-4 pt-4">
-              <Input
-                type="number"
-                placeholder="Enter step count"
-                value={steps}
-                onChange={(e) => setSteps(e.target.value)}
-              />
-              <Button onClick={handleAddSteps} className="w-full">
-                Add Steps
-              </Button>
+        {/* Auto-Detection Controls */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                <Smartphone className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold">Auto Step Detection</p>
+                <p className="text-sm text-muted-foreground">
+                  {!stepDetector.isSupported 
+                    ? 'Not supported on this device'
+                    : stepDetector.permissionStatus === 'denied'
+                    ? 'Motion permission denied'
+                    : stepDetector.isTracking 
+                    ? `Detected: ${stepDetector.steps} steps`
+                    : 'Tap to start tracking'}
+                </p>
+              </div>
+              {stepDetector.isSupported && stepDetector.permissionStatus !== 'denied' && (
+                <Button
+                  variant={stepDetector.isTracking ? 'destructive' : 'default'}
+                  size="lg"
+                  className="w-14 h-14 rounded-full p-0"
+                  onClick={stepDetector.isTracking ? handleStopTracking : handleStartTracking}
+                >
+                  {stepDetector.isTracking ? (
+                    <Pause className="w-6 h-6" />
+                  ) : (
+                    <Play className="w-6 h-6 ml-1" />
+                  )}
+                </Button>
+              )}
             </div>
-          </DialogContent>
-        </Dialog>
+            {stepDetector.permissionStatus === 'prompt' && !stepDetector.isTracking && (
+              <p className="text-xs text-muted-foreground mt-3 text-center">
+                You'll be asked to allow motion sensor access
+              </p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Manual Entry Section */}
+        <div className="space-y-3">
+          <p className="text-sm font-medium text-muted-foreground">Or add steps manually:</p>
+          
+          {/* Quick Add Buttons */}
+          <div className="grid grid-cols-4 gap-2">
+            {[500, 1000, 2000, 5000].map(amount => (
+              <Button 
+                key={amount} 
+                variant="outline" 
+                className="flex flex-col h-16"
+                onClick={() => quickAddSteps(amount)}
+              >
+                <span className="text-xs text-muted-foreground">+</span>
+                <span className="font-semibold">{amount}</span>
+              </Button>
+            ))}
+          </div>
+
+          {/* Custom Add */}
+          <Dialog open={stepsDialogOpen} onOpenChange={setStepsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="w-full">
+                <Plus className="w-5 h-5 mr-2" /> Custom Amount
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Log Your Steps</DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 pt-4">
+                <Input
+                  type="number"
+                  placeholder="Enter step count"
+                  value={steps}
+                  onChange={(e) => setSteps(e.target.value)}
+                />
+                <Button onClick={handleAddSteps} className="w-full">
+                  Add Steps
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
 
         {/* Weekly Stats */}
         <div className="grid grid-cols-2 gap-4">
