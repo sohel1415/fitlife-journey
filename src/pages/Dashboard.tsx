@@ -6,7 +6,7 @@ import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
-import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight, BookOpen, UtensilsCrossed } from 'lucide-react';
+import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight, BookOpen, UtensilsCrossed, Footprints } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -105,6 +105,12 @@ const Dashboard = () => {
             title="Diet Suggestions"
             subtitle="View personalized meal recommendations"
             onClick={() => navigate('/diet')}
+          />
+          <ActionCard 
+            icon={<Footprints className="w-6 h-6" />}
+            title="Step Counter"
+            subtitle="Track your daily walking steps"
+            onClick={() => navigate('/steps')}
           />
           <ActionCard 
             icon={<TrendingUp className="w-6 h-6" />}
