@@ -199,6 +199,39 @@ export type Database = {
         }
         Relationships: []
       }
+      step_logs: {
+        Row: {
+          created_at: string
+          goal: number
+          id: string
+          logged_date: string
+          notes: string | null
+          steps: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          goal?: number
+          id?: string
+          logged_date?: string
+          notes?: string | null
+          steps?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          goal?: number
+          id?: string
+          logged_date?: string
+          notes?: string | null
+          steps?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       weight_logs: {
         Row: {
           body_fat_percentage: number | null
