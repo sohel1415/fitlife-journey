@@ -6,7 +6,7 @@ import { useWorkoutLogs } from '@/hooks/useWorkoutLogs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BottomNav } from '@/components/BottomNav';
-import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight, BookOpen, UtensilsCrossed, Footprints } from 'lucide-react';
+import { Flame, Dumbbell, TrendingUp, Clock, Trophy, ChevronRight, BookOpen, UtensilsCrossed, Footprints, MapPin } from 'lucide-react';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -111,6 +111,12 @@ const Dashboard = () => {
             title="Step Counter"
             subtitle="Track your daily walking steps"
             onClick={() => navigate('/steps')}
+          />
+          <ActionCard 
+            icon={<MapPin className="w-6 h-6" />}
+            title="Running Tracker"
+            subtitle="Track speed, distance, pace & more"
+            onClick={() => navigate('/running')}
           />
           <ActionCard 
             icon={<TrendingUp className="w-6 h-6" />}

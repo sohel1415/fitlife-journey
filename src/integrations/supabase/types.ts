@@ -199,6 +199,54 @@ export type Database = {
         }
         Relationships: []
       }
+      running_logs: {
+        Row: {
+          avg_pace_min_km: number | null
+          avg_speed_kmh: number | null
+          calories_burned: number | null
+          created_at: string
+          distance_km: number
+          duration_seconds: number
+          end_time: string | null
+          id: string
+          max_speed_kmh: number | null
+          notes: string | null
+          route_data: Json | null
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          avg_pace_min_km?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          created_at?: string
+          distance_km?: number
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_data?: Json | null
+          start_time?: string
+          user_id: string
+        }
+        Update: {
+          avg_pace_min_km?: number | null
+          avg_speed_kmh?: number | null
+          calories_burned?: number | null
+          created_at?: string
+          distance_km?: number
+          duration_seconds?: number
+          end_time?: string | null
+          id?: string
+          max_speed_kmh?: number | null
+          notes?: string | null
+          route_data?: Json | null
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       step_logs: {
         Row: {
           created_at: string

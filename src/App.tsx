@@ -16,6 +16,7 @@ import ActiveWorkout from "./pages/ActiveWorkout";
 import BMICalculator from "./pages/BMICalculator";
 import Diet from "./pages/Diet";
 import Steps from "./pages/Steps";
+import Running from "./pages/Running";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/bmi" element={<BMICalculator />} />
               <Route path="/diet" element={<Diet />} />
               <Route path="/steps" element={<Steps />} />
+              <Route path="/running" element={<Running />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
