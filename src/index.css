@@ -121,11 +121,26 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    overscroll-behavior-y: contain;
   }
 
   /* Mobile-first responsive text */
   html {
     font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Prevent pull-to-refresh on mobile */
+  html, body {
+    overscroll-behavior: none;
+  }
+
+  /* Better input focus on mobile */
+  input, textarea, select {
+    font-size: 16px !important;
   }
 }
 
@@ -157,15 +172,36 @@
     padding-top: env(safe-area-inset-top, 1rem);
   }
 
-  /* Fitness card hover effect */
+  /* Fitness card - mobile-friendly with touch feedback */
   .fitness-card {
-    @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+    @apply transition-all duration-200 active:scale-[0.98];
+    touch-action: manipulation;
+  }
+
+  @media (hover: hover) {
+    .fitness-card {
+      @apply hover:shadow-lg hover:-translate-y-1;
+    }
+  }
+
+  /* Touch manipulation for all interactive elements */
+  .touch-manipulation {
+    touch-action: manipulation;
   }
 
   /* Timer circle animation */
   .timer-ring {
     transform: rotate(-90deg);
     transform-origin: 50% 50%;
+  }
+
+  /* Hide scrollbar for horizontal scroll areas */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 
